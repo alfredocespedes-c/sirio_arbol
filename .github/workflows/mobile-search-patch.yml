@@ -1,0 +1,35 @@
+name: Mobile search layout patch
+on:
+  push:
+    paths:
+      - '.github/workflows/mobile-search-patch.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tune mobile search focus
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          old="setTimeout(()=>{world.style.transform=`translate(calc(-50% + ${(900-cx)*.76}px),calc(-50% + ${(725-cy)*.76}px)) scale(1.22)`;result.textContent=`${hits.length} coincidencias · selecciona una persona`},180)"
+          new="setTimeout(()=>{const mobile=window.matchMedia('(max-width:700px)').matches,sc=mobile?.66:1.22,k=mobile?.42:.76,vy=mobile?640:725;world.style.transform=`translate(calc(-50% + ${(900-cx)*k}px),calc(-50% + ${(vy-cy)*k}px)) scale(${sc})`;result.textContent=`${hits.length} coincidencias · selecciona una persona`},180)"
+          if old not in s: raise SystemExit('search transform pattern not found')
+          s=s.replace(old,new)
+          oldcss="@media(max-width:700px){.hero h1{font-size:57px}.treeViewport{height:700px}.world{transform:translate(-50%,-50%) scale(.38)}"
+          newcss="@media(max-width:700px){.hero h1{font-size:57px}.searchStage{height:270px}.treeViewport{height:760px}.world{top:48%;transform:translate(-50%,-50%) scale(.42)}.person.hit{transform:translate(-50%,-50%) scale(1.12)}.person.hit .avatar{width:58px;height:58px;box-shadow:0 0 0 8px #ce112619,0 10px 28px #0002}.person.hit b{font-size:10px;max-width:110px;margin:5px auto 0}.person.hit small{font-size:8px}"
+          if oldcss not in s: raise SystemExit('mobile css pattern not found')
+          s=s.replace(oldcss,newcss)
+          p.write_text(s)
+          PY
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "fix: responsive mobile search focus 2026.09.02.03"
+          git push
