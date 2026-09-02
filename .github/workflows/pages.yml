@@ -27,6 +27,8 @@ jobs:
           from pathlib import Path
           p=Path('_site/index.html')
           s=p.read_text()
+          fix='''<style id="sirio-navigation-selection-fix">#treeViewport,#treeViewport *,#familyView,#familyView *{-webkit-user-select:none!important;user-select:none!important;-webkit-user-drag:none!important}#treeViewport{cursor:grab}#treeViewport:active{cursor:grabbing}#surname{-webkit-user-select:text!important;user-select:text!important}</style>'''
+          s=s.replace('</head>',fix+'</head>')
           s=s.replace('</body>','<script src="mobile-pan.js"></script></body>')
           p.write_text(s)
           PY
