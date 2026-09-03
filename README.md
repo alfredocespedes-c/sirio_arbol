@@ -1,5 +1,7 @@
 # Sirio Árbol
 
-Versión 2026.09.02.06 — búsqueda dinámica, navegación animada y grafo familiar.
+Versión estable anterior: 2026.09.02.06 — búsqueda dinámica, navegación animada y grafo familiar.
 
-Estado: release 2026.09.02.06.
+Versión actual: 2026.09.02.07 — adaptación responsive para móvil, áreas táctiles, safe areas iPhone/Android, árbol y editor adaptados a pantallas pequeñas.
+
+Estado: release 2026.09.02.07.
